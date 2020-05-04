@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CwConverter.Annotations;
@@ -9,35 +10,13 @@ namespace CwConverter.ViewModels
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool MoneyActive;
-
-        public bool CrystalsActive;
-
-        public bool StepsActive;
-
         public InterfaceViewModel()
         {
-            MoneyValue = 1;
-            CrystalValue = 0.03226;
-            StepValue = 0.00001;
-
-            MoneyActive = false;
-            CrystalsActive = false;
-            StepsActive= false;
+            CrystalValue = 31;
+            StepValue = 130000;
         }
 
         #region Properties
-
-        private double _moneyValue;
-        public double MoneyValue
-        {
-            get => _moneyValue;
-            set
-            {
-                _moneyValue = value;
-                OnPropertyChanged(nameof(MoneyValue));
-            }
-        }
 
         private double _crystalValue;
         public double CrystalValue
@@ -47,6 +26,7 @@ namespace CwConverter.ViewModels
             {
                 _crystalValue = value;
                 OnPropertyChanged(nameof(CrystalValue));
+                ConvertCommodity(nameof(Money), Money);
             }
         }
 
@@ -58,6 +38,7 @@ namespace CwConverter.ViewModels
             {
                 _stepValue = value;
                 OnPropertyChanged(nameof(StepValue));
+                ConvertCommodity(nameof(Money), Money);
             }
         }
 
@@ -69,7 +50,7 @@ namespace CwConverter.ViewModels
             {
                 _money = value;
                 OnPropertyChanged(nameof(Money));
-                ConvertCommodity(nameof(Money), Money);
+                if (Money > 0) ConvertCommodity(nameof(Money), Money);
             }
         }
 
@@ -81,7 +62,7 @@ namespace CwConverter.ViewModels
             {
                 _crystals = value;
                 OnPropertyChanged(nameof(Crystals));
-                ConvertCommodity(nameof(Crystals), Crystals);
+                //if (Crystals > 0) ConvertCommodity(nameof(Crystals), Crystals);
             }
         }
 
@@ -93,7 +74,7 @@ namespace CwConverter.ViewModels
             {
                 _steps = value;
                 OnPropertyChanged(nameof(Steps));
-                ConvertCommodity(nameof(Steps), Steps);
+                //if (Steps > 0) ConvertCommodity(nameof(Steps), Steps);
             }
         }
 
@@ -131,22 +112,22 @@ namespace CwConverter.ViewModels
             {
                 case nameof(Money):
 
-                    crystals = CrystalValue * value;
-                    steps = StepValue * value;
+                    crystals = 1 / CrystalValue * value;
+                    steps = 1 / StepValue * value;
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Steps), steps);
                     break;
 
                 case nameof(Crystals):
-                    money = CrystalValue * value / CrystalValue;
-                    steps = value / StepValue;
+                    money = value * CrystalValue / 1;
+                    steps = money / StepValue;
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Steps), steps);
                     break;
 
                 case nameof(Steps):
-                    money = MoneyValue * value;
-                    crystals = CrystalValue * value;
+                    money = value / 1 * StepValue;
+                    crystals = money / CrystalValue;
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Crystals), crystals);
                     break;
@@ -161,15 +142,15 @@ namespace CwConverter.ViewModels
                 switch (key)
                 {
                     case nameof(Money):
-                        Money = value;
+                        Money = Math.Round(value);
                         break;
 
                     case nameof(Crystals):
-                        Crystals = value;
+                        Crystals = Math.Round(value);
                         break;
 
                     case nameof(Steps):
-                        Steps = value;
+                        Steps = Math.Round(value);
                         break;
                 }
             }
