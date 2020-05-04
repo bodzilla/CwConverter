@@ -8,36 +8,34 @@ namespace CwConverter.ViewModels
 {
     internal class InterfaceViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public InterfaceViewModel()
         {
-            CrystalValue = 31;
-            StepValue = 130000;
+            CrystalBase = 25;
+            StepBase = 90000;
         }
 
         #region Properties
 
-        private double _crystalValue;
-        public double CrystalValue
+        private double _crystalBase;
+        public double CrystalBase
         {
-            get => _crystalValue;
+            get => _crystalBase;
             set
             {
-                _crystalValue = value;
-                OnPropertyChanged(nameof(CrystalValue));
+                _crystalBase = value;
+                OnPropertyChanged(nameof(CrystalBase));
                 ConvertCommodity(nameof(Money), Money);
             }
         }
 
-        private double _stepValue;
-        public double StepValue
+        private double _stepBase;
+        public double StepBase
         {
-            get => _stepValue;
+            get => _stepBase;
             set
             {
-                _stepValue = value;
-                OnPropertyChanged(nameof(StepValue));
+                _stepBase = value;
+                OnPropertyChanged(nameof(StepBase));
                 ConvertCommodity(nameof(Money), Money);
             }
         }
@@ -50,7 +48,7 @@ namespace CwConverter.ViewModels
             {
                 _money = value;
                 OnPropertyChanged(nameof(Money));
-                if (Money > 0) ConvertCommodity(nameof(Money), Money);
+                if (IsMoneyFocused && !IsCrystalsFocused && !IsStepsFocused) ConvertCommodity(nameof(Money), Money);
             }
         }
 
@@ -62,7 +60,7 @@ namespace CwConverter.ViewModels
             {
                 _crystals = value;
                 OnPropertyChanged(nameof(Crystals));
-                //if (Crystals > 0) ConvertCommodity(nameof(Crystals), Crystals);
+                if (IsCrystalsFocused && !IsMoneyFocused && !IsStepsFocused) ConvertCommodity(nameof(Crystals), Crystals);
             }
         }
 
@@ -74,7 +72,40 @@ namespace CwConverter.ViewModels
             {
                 _steps = value;
                 OnPropertyChanged(nameof(Steps));
-                //if (Steps > 0) ConvertCommodity(nameof(Steps), Steps);
+                if (IsStepsFocused && !IsMoneyFocused && !IsCrystalsFocused) ConvertCommodity(nameof(Steps), Steps);
+            }
+        }
+
+        private bool _isMoneyFocused;
+        public bool IsMoneyFocused
+        {
+            get => _isMoneyFocused;
+            set
+            {
+                _isMoneyFocused = value;
+                OnPropertyChanged(nameof(IsMoneyFocused));
+            }
+        }
+
+        private bool _isCrystalsFocused;
+        public bool IsCrystalsFocused
+        {
+            get => _isCrystalsFocused;
+            set
+            {
+                _isCrystalsFocused = value;
+                OnPropertyChanged(nameof(IsCrystalsFocused));
+            }
+        }
+
+        private bool _isStepsFocused;
+        public bool IsStepsFocused
+        {
+            get => _isStepsFocused;
+            set
+            {
+                _isStepsFocused = value;
+                OnPropertyChanged(nameof(IsStepsFocused));
             }
         }
 
@@ -112,22 +143,22 @@ namespace CwConverter.ViewModels
             {
                 case nameof(Money):
 
-                    crystals = 1 / CrystalValue * value;
-                    steps = 1 / StepValue * value;
+                    crystals = 1 / CrystalBase * value;
+                    steps = 1 / StepBase * value;
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Steps), steps);
                     break;
 
                 case nameof(Crystals):
-                    money = value * CrystalValue / 1;
-                    steps = money / StepValue;
+                    money = CrystalBase / 1 * value;
+                    steps = money / StepBase;
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Steps), steps);
                     break;
 
                 case nameof(Steps):
-                    money = value / 1 * StepValue;
-                    crystals = money / CrystalValue;
+                    money = value / 1 * StepBase;
+                    crystals = money / CrystalBase;
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Crystals), crystals);
                     break;
@@ -155,6 +186,8 @@ namespace CwConverter.ViewModels
                 }
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
