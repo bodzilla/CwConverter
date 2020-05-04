@@ -13,34 +13,34 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" >
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label FontSize="14" Margin="-5,0,0,0">Base Values</Label>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">$ / Crystal</Label>
                 <TextBox Text="{Binding Path=CrystalBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">$ / Step</Label>
                 <TextBox Text="{Binding Path=StepBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
-        <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
         <StackPanel Grid.Column="2">
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label FontSize="14" Margin="-5,0,0,0">Convert</Label>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">Money</Label>
                 <TextBox Text="{Binding Path=Money, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsMoneyFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">Crystals</Label>
                 <TextBox Text="{Binding Path=Crystals, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsCrystalsFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15">
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">Steps</Label>
-                <TextBox Text="{Binding Path=Steps, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsStepsFocused, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+                <TextBox Text="{Binding Path=Steps, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsStepsFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

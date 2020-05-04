@@ -113,24 +113,8 @@ namespace CwConverter.ViewModels
 
         private void ConvertCommodity(string commodity, double value)
         {
-            Dictionary<string, double> values;
-            switch (commodity)
-            {
-                case nameof(Money):
-                    values = Convert(nameof(Money), value);
-                    Display(values);
-                    break;
-
-                case nameof(Crystals):
-                    values = Convert(nameof(Crystals), value);
-                    Display(values);
-                    break;
-
-                case nameof(Steps):
-                    values = Convert(nameof(Steps), value);
-                    Display(values);
-                    break;
-            }
+            var values = Convert(commodity, value);
+            Display(values);
         }
 
         private Dictionary<string, double> Convert(string commodity, double value)
