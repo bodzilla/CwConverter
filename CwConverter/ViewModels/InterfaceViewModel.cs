@@ -126,7 +126,6 @@ namespace CwConverter.ViewModels
             switch (commodity)
             {
                 case nameof(Money):
-
                     crystals = 1 / CrystalBase * value;
                     steps = 1 / StepBase * value;
                     values.Add(nameof(Crystals), crystals);
