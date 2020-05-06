@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:extensions="clr-namespace:CwConverter.Extensions"
              mc:Ignorable="d" 
-             d:DesignHeight="350" d:DesignWidth="500">
+             d:DesignHeight="450" d:DesignWidth="500">
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -16,13 +16,25 @@
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label FontSize="14" Margin="-5,0,0,0">Base Values</Label>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+            <StackPanel VerticalAlignment="Center" Margin="15,59,15,15">
                 <Label Margin="-5,0,0,0">$ / Crystal</Label>
                 <TextBox Text="{Binding Path=CrystalBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">$ / Step</Label>
                 <TextBox Text="{Binding Path=StepBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">$ / Drug</Label>
+                <TextBox Text="{Binding Path=DrugBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">$ / Potion</Label>
+                <TextBox Text="{Binding Path=PotionBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">$ / Donator Pack</Label>
+                <TextBox Text="{Binding Path=DonatorPackBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
@@ -41,6 +53,18 @@
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">Steps</Label>
                 <TextBox Text="{Binding Path=Steps, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsStepsFocused, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">Drugs</Label>
+                <TextBox Text="{Binding Path=Drugs, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsDrugsFocused, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">Potions</Label>
+                <TextBox Text="{Binding Path=Potions, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsPotionsFocused, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">Donator Packs</Label>
+                <TextBox Text="{Binding Path=DonatorPacks, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsDonatorPacksFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
