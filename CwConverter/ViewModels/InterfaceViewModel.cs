@@ -11,10 +11,10 @@ namespace CwConverter.ViewModels
         public InterfaceViewModel()
         {
             CrystalBase = 25;
-            StepBase = 100000;
-            DrugBase = 150000;
+            StepBase = 170000;
+            DrugBase = 160000;
             PotionBase = 150000;
-            DonatorPackBase = 500000000;
+            DonatorPackBase = 750000000;
         }
 
         #region Base
