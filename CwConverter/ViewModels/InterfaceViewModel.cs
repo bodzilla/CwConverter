@@ -10,11 +10,11 @@ namespace CwConverter.ViewModels
     {
         public InterfaceViewModel()
         {
-            CrystalBase = 25;
-            StepBase = 170000;
-            DrugBase = 160000;
-            PotionBase = 150000;
-            DonatorPackBase = 750000000;
+            CrystalBase = 27;
+            StepBase = 110000;
+            DrugBase = 350000;
+            PotionBase = 180000;
+            DonatorPackBase = 2500000000;
         }
 
         #region Base
@@ -338,27 +338,27 @@ namespace CwConverter.ViewModels
                 switch (key)
                 {
                     case nameof(Money):
-                        Money = Math.Round(value);
+                        Money = Math.Floor(value);
                         break;
 
                     case nameof(Crystals):
-                        Crystals = Math.Round(value);
+                        Crystals = Math.Floor(value);
                         break;
 
                     case nameof(Steps):
-                        Steps = Math.Round(value);
+                        Steps = Math.Floor(value);
                         break;
 
                     case nameof(Drugs):
-                        Drugs = Math.Round(value);
+                        Drugs = Math.Floor(value);
                         break;
 
                     case nameof(Potions):
-                        Potions = Math.Round(value);
+                        Potions = Math.Floor(value);
                         break;
 
                     case nameof(DonatorPacks):
-                        DonatorPacks = Math.Round(value);
+                        DonatorPacks = Math.Floor(value);
                         break;
                 }
             }
