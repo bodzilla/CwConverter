@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:extensions="clr-namespace:CwConverter.Extensions"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="500">
+             d:DesignHeight="455" d:DesignWidth="500">
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -36,6 +36,10 @@
                 <Label Margin="-5,0,0,0">$ / Donator Pack</Label>
                 <TextBox Text="{Binding Path=DonatorPackBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">$ / Item</Label>
+                <TextBox Text="{Binding Path=ItemBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
         </StackPanel>
         <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
         <StackPanel Grid.Column="2">
@@ -65,6 +69,10 @@
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">Donator Packs</Label>
                 <TextBox Text="{Binding Path=DonatorPacks, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsDonatorPacksFocused, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
+                <Label Margin="-5,0,0,0">Items</Label>
+                <TextBox Text="{Binding Path=Items, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsItemsFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

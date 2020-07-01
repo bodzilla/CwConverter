@@ -10,11 +10,12 @@ namespace CwConverter.ViewModels
     {
         public InterfaceViewModel()
         {
-            CrystalBase = 27;
-            StepBase = 110000;
+            CrystalBase = 30;
+            StepBase = 100000;
             DrugBase = 350000;
             PotionBase = 180000;
             DonatorPackBase = 2500000000;
+            ItemBase = 100;
         }
 
         #region Base
@@ -75,6 +76,18 @@ namespace CwConverter.ViewModels
             {
                 _donatorPackBase = value;
                 OnPropertyChanged(nameof(DonatorPackBase));
+                ConvertCommodity(nameof(Money), Money);
+            }
+        }
+
+        private double _itemBase;
+        public double ItemBase
+        {
+            get => _itemBase;
+            set
+            {
+                _itemBase = value;
+                OnPropertyChanged(nameof(ItemBase));
                 ConvertCommodity(nameof(Money), Money);
             }
         }
@@ -154,6 +167,19 @@ namespace CwConverter.ViewModels
                 if (IsDonatorPacksFocused) ConvertCommodity(nameof(DonatorPacks), DonatorPacks);
             }
         }
+
+        private double _items;
+        public double Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                OnPropertyChanged(nameof(Items));
+                if (IsItemsFocused) ConvertCommodity(nameof(Items), Items);
+            }
+        }
+
         #endregion
 
         #region Focused
@@ -224,13 +250,20 @@ namespace CwConverter.ViewModels
             }
         }
 
+        private bool _isItemsFocused;
+        public bool IsItemsFocused
+        {
+            get => _isItemsFocused;
+            set
+            {
+                _isItemsFocused = value;
+                OnPropertyChanged(nameof(IsItemsFocused));
+            }
+        }
+
         #endregion
 
-        private void ConvertCommodity(string commodity, double value)
-        {
-            var values = Convert(commodity, value);
-            Display(values);
-        }
+        private void ConvertCommodity(string commodity, double value) => Display(Convert(commodity, value));
 
         private Dictionary<string, double> Convert(string commodity, double value)
         {
@@ -241,6 +274,7 @@ namespace CwConverter.ViewModels
             double drugs;
             double potions;
             double donatorPacks;
+            double items;
 
             switch (commodity)
             {
@@ -250,12 +284,14 @@ namespace CwConverter.ViewModels
                     drugs = 1 / DrugBase * value;
                     potions = 1 / PotionBase * value;
                     donatorPacks = 1 / DonatorPackBase * value;
+                    items = 1 / ItemBase * value;
 
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Steps), steps);
                     values.Add(nameof(Drugs), drugs);
                     values.Add(nameof(Potions), potions);
                     values.Add(nameof(DonatorPacks), donatorPacks);
+                    values.Add(nameof(Items), items);
                     break;
 
                 case nameof(Crystals):
@@ -264,12 +300,14 @@ namespace CwConverter.ViewModels
                     drugs = money / DrugBase;
                     potions = money / PotionBase;
                     donatorPacks = money / DonatorPackBase;
+                    items = money / ItemBase;
 
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Steps), steps);
                     values.Add(nameof(Drugs), drugs);
                     values.Add(nameof(Potions), potions);
                     values.Add(nameof(DonatorPacks), donatorPacks);
+                    values.Add(nameof(Items), items);
                     break;
 
                 case nameof(Steps):
@@ -278,12 +316,14 @@ namespace CwConverter.ViewModels
                     drugs = money / DrugBase;
                     potions = money / PotionBase;
                     donatorPacks = money / DonatorPackBase;
+                    items = money / ItemBase;
 
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Drugs), drugs);
                     values.Add(nameof(Potions), potions);
                     values.Add(nameof(DonatorPacks), donatorPacks);
+                    values.Add(nameof(Items), items);
                     break;
 
                 case nameof(Drugs):
@@ -292,12 +332,14 @@ namespace CwConverter.ViewModels
                     steps = money / StepBase;
                     potions = money / PotionBase;
                     donatorPacks = money / DonatorPackBase;
+                    items = money / ItemBase;
 
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Steps), steps);
                     values.Add(nameof(Potions), potions);
                     values.Add(nameof(DonatorPacks), donatorPacks);
+                    values.Add(nameof(Items), items);
                     break;
 
                 case nameof(Potions):
@@ -306,12 +348,14 @@ namespace CwConverter.ViewModels
                     steps = money / StepBase;
                     drugs = money / DrugBase;
                     donatorPacks = money / DonatorPackBase;
+                    items = money / ItemBase;
 
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Steps), steps);
                     values.Add(nameof(Drugs), drugs);
                     values.Add(nameof(DonatorPacks), donatorPacks);
+                    values.Add(nameof(Items), items);
                     break;
 
                 case nameof(DonatorPacks):
@@ -320,12 +364,30 @@ namespace CwConverter.ViewModels
                     steps = money / StepBase;
                     drugs = money / DrugBase;
                     potions = money / PotionBase;
+                    items = money / ItemBase;
 
                     values.Add(nameof(Money), money);
                     values.Add(nameof(Crystals), crystals);
                     values.Add(nameof(Steps), steps);
                     values.Add(nameof(Drugs), drugs);
                     values.Add(nameof(Potions), potions);
+                    values.Add(nameof(Items), items);
+                    break;
+
+                case nameof(Items):
+                    money = value / 1 * ItemBase;
+                    crystals = money / CrystalBase;
+                    steps = money / StepBase;
+                    drugs = money / DrugBase;
+                    potions = money / PotionBase;
+                    donatorPacks = money / DonatorPackBase;
+
+                    values.Add(nameof(Money), money);
+                    values.Add(nameof(Crystals), crystals);
+                    values.Add(nameof(Steps), steps);
+                    values.Add(nameof(Drugs), drugs);
+                    values.Add(nameof(Potions), potions);
+                    values.Add(nameof(DonatorPacks), donatorPacks);
                     break;
             }
             return values;
@@ -359,6 +421,10 @@ namespace CwConverter.ViewModels
 
                     case nameof(DonatorPacks):
                         DonatorPacks = Math.Floor(value);
+                        break;
+
+                    case nameof(Items):
+                        Items = Math.Floor(value);
                         break;
                 }
             }
