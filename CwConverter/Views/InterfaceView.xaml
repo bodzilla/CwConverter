@@ -16,7 +16,10 @@
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label FontSize="14" Margin="-5,0,0,0">Base Values</Label>
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Margin="15,59,15,15">
+            <StackPanel VerticalAlignment="Center" Margin="15,26,15,15">
+                <Button Height="18" Padding="0,-2,0,0" Content="Reset Values" Command="{Binding BtnResetValues}" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
                 <Label Margin="-5,0,0,0">$ / Crystal</Label>
                 <TextBox Text="{Binding Path=CrystalBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>

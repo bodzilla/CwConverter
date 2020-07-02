@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using CwConverter.Annotations;
+using Prism.Commands;
 
 namespace CwConverter.ViewModels
 {
     internal class InterfaceViewModel : INotifyPropertyChanged
     {
-        public InterfaceViewModel()
+        public InterfaceViewModel() => ResetValues();
+
+        private void ResetValues()
         {
             CrystalBase = 30;
             StepBase = 100000;
@@ -16,7 +19,18 @@ namespace CwConverter.ViewModels
             PotionBase = 180000;
             DonatorPackBase = 2500000000;
             ItemBase = 100;
+
+            Money = 0;
+            Crystals = 0;
+            Steps = 0;
+            Drugs = 0;
+            Potions = 0;
+            DonatorPacks = 0;
+            Items = 0;
         }
+
+        private DelegateCommand _btnResetValues;
+        public DelegateCommand BtnResetValues => _btnResetValues ??= new DelegateCommand(ResetValues, () => true);
 
         #region Base
 
