@@ -42,7 +42,7 @@ namespace CwConverter.ViewModels
             {
                 _crystalBase = value;
                 OnPropertyChanged(nameof(CrystalBase));
-                ConvertCommodity(nameof(Money), Money);
+                ConvertCommodity(nameof(Crystals), Crystals);
             }
         }
 
@@ -54,7 +54,7 @@ namespace CwConverter.ViewModels
             {
                 _stepBase = value;
                 OnPropertyChanged(nameof(StepBase));
-                ConvertCommodity(nameof(Money), Money);
+                ConvertCommodity(nameof(Steps), Steps);
             }
         }
 
@@ -66,7 +66,7 @@ namespace CwConverter.ViewModels
             {
                 _drugBase = value;
                 OnPropertyChanged(nameof(DrugBase));
-                ConvertCommodity(nameof(Money), Money);
+                ConvertCommodity(nameof(Drugs), Drugs);
             }
         }
 
@@ -78,7 +78,7 @@ namespace CwConverter.ViewModels
             {
                 _potionBase = value;
                 OnPropertyChanged(nameof(PotionBase));
-                ConvertCommodity(nameof(Money), Money);
+                ConvertCommodity(nameof(Potions), Potions);
             }
         }
 
@@ -90,7 +90,7 @@ namespace CwConverter.ViewModels
             {
                 _donatorPackBase = value;
                 OnPropertyChanged(nameof(DonatorPackBase));
-                ConvertCommodity(nameof(Money), Money);
+                ConvertCommodity(nameof(DonatorPacks), DonatorPacks);
             }
         }
 
@@ -102,7 +102,7 @@ namespace CwConverter.ViewModels
             {
                 _itemBase = value;
                 OnPropertyChanged(nameof(ItemBase));
-                ConvertCommodity(nameof(Money), Money);
+                ConvertCommodity(nameof(Items), Items);
             }
         }
 
