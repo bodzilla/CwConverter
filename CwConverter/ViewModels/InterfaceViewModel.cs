@@ -13,11 +13,11 @@ namespace CwConverter.ViewModels
 
         private void ResetValues()
         {
-            CrystalBase = 30;
-            StepBase = 100000;
-            DrugBase = 350000;
-            PotionBase = 180000;
-            DonatorPackBase = 2500000000;
+            CrystalBase = 40;
+            StepBase = 235_000;
+            DrugBase = 350_000;
+            PotionBase = 180_000;
+            DonatorPackBase = 7_000_000_000;
             ItemBase = 100;
 
             Money = 0;
@@ -33,6 +33,8 @@ namespace CwConverter.ViewModels
         public DelegateCommand BtnResetValues => _btnResetValues ??= new DelegateCommand(ResetValues, () => true);
 
         #region Base
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private double _crystalBase;
         public double CrystalBase
@@ -404,6 +406,7 @@ namespace CwConverter.ViewModels
                     values.Add(nameof(DonatorPacks), donatorPacks);
                     break;
             }
+
             return values;
         }
 
@@ -444,10 +447,7 @@ namespace CwConverter.ViewModels
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

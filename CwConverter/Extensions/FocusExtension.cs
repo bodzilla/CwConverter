@@ -5,9 +5,7 @@ namespace CwConverter.Extensions
 {
     internal static class FocusExtension
     {
-        public static readonly DependencyProperty IsFocusedProperty =
-             DependencyProperty.RegisterAttached("IsFocused", typeof(bool?),
-                 typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged) { BindsTwoWayByDefault = true });
+        public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached("IsFocused", typeof(bool?), typeof(FocusExtension), new FrameworkPropertyMetadata(IsFocusedChanged) { BindsTwoWayByDefault = true });
 
         public static bool? GetIsFocused(DependencyObject element)
         {
@@ -23,30 +21,28 @@ namespace CwConverter.Extensions
 
         private static void IsFocusedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var fe = (FrameworkElement)d;
+            var frameworkElement = (FrameworkElement)d;
 
             if (e.OldValue == null)
             {
-                fe.GotFocus += FrameworkElement_GotFocus;
-                fe.LostFocus += FrameworkElement_LostFocus;
+                frameworkElement.GotFocus += FrameworkElement_GotFocus;
+                frameworkElement.LostFocus += FrameworkElement_LostFocus;
             }
 
-            if (!fe.IsVisible) fe.IsVisibleChanged += fe_IsVisibleChanged;
-            if ((bool)e.NewValue) fe.Focus();
+            if (!frameworkElement.IsVisible) frameworkElement.IsVisibleChanged += fe_IsVisibleChanged;
+            if ((bool)e.NewValue) frameworkElement.Focus();
         }
 
         private static void fe_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var fe = (FrameworkElement)sender;
-            if (!fe.IsVisible || !(bool)((FrameworkElement)sender).GetValue(IsFocusedProperty)) return;
-            fe.IsVisibleChanged -= fe_IsVisibleChanged;
-            fe.Focus();
+            var frameworkElement = (FrameworkElement)sender;
+            if (!frameworkElement.IsVisible || !(bool)((FrameworkElement)sender).GetValue(IsFocusedProperty)) return;
+            frameworkElement.IsVisibleChanged -= fe_IsVisibleChanged;
+            frameworkElement.Focus();
         }
 
-        private static void FrameworkElement_GotFocus(object sender, RoutedEventArgs e)
-            => ((FrameworkElement)sender).SetValue(IsFocusedProperty, true);
+        private static void FrameworkElement_GotFocus(object sender, RoutedEventArgs e) => ((FrameworkElement)sender).SetValue(IsFocusedProperty, true);
 
-        private static void FrameworkElement_LostFocus(object sender, RoutedEventArgs e)
-            => ((FrameworkElement)sender).SetValue(IsFocusedProperty, false);
+        private static void FrameworkElement_LostFocus(object sender, RoutedEventArgs e) => ((FrameworkElement)sender).SetValue(IsFocusedProperty, false);
     }
 }
