@@ -13,8 +13,10 @@ namespace CwConverter.ViewModels
 
         private void ResetValues()
         {
-            CrystalBase = 40;
-            StepBase = 235_000;
+            ItemTextValue = "Item";
+
+            CrystalBase = 37;
+            StepBase = 180_000;
             DrugBase = 350_000;
             PotionBase = 180_000;
             DonatorPackBase = 7_000_000_000;
@@ -107,6 +109,20 @@ namespace CwConverter.ViewModels
                 ConvertCommodity(nameof(Items), Items);
             }
         }
+
+        private string _itemTextValue;
+        public string ItemTextValue
+        {
+            get => _itemTextValue;
+            set
+            {
+                _itemTextValue = value;
+                OnPropertyChanged(nameof(ItemTextValue));
+                OnPropertyChanged(nameof(ItemsTextValue));
+            }
+        }
+
+        public string ItemsTextValue => ItemTextValue + "s";
 
         #endregion
 

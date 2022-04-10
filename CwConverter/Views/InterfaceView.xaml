@@ -40,7 +40,14 @@
                 <TextBox Text="{Binding Path=DonatorPackBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
-                <Label Margin="-5,0,0,0">$ / Item</Label>
+                <StackPanel VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Margin="-4,0,0,0">$ /</Label>
+                        <Border BorderThickness="0"  Margin="-2,5,0,5">
+                            <TextBox Background="Transparent" BorderThickness="0" Text="{Binding Path=ItemTextValue, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
                 <TextBox Text="{Binding Path=ItemBase, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
@@ -74,7 +81,7 @@
                 <TextBox Text="{Binding Path=DonatorPacks, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsDonatorPacksFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" Margin="15,0,15,15">
-                <Label Margin="-5,0,0,0">Items</Label>
+                <Label Margin="-5,0,0,0" Content="{Binding Path=ItemsTextValue, UpdateSourceTrigger=PropertyChanged}"/>
                 <TextBox Text="{Binding Path=Items, StringFormat='{}{0:#,0}', UpdateSourceTrigger=PropertyChanged}" extensions:FocusExtension.IsFocused="{Binding IsItemsFocused, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
         </StackPanel>
