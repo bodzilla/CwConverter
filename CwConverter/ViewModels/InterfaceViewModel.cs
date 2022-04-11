@@ -9,12 +9,14 @@ namespace CwConverter.ViewModels
 {
     internal class InterfaceViewModel : INotifyPropertyChanged
     {
-        public InterfaceViewModel() => ResetValues();
+        public InterfaceViewModel()
+        {
+            ItemTextValue = "Item";
+            ResetValues();
+        }
 
         private void ResetValues()
         {
-            ItemTextValue = "Item";
-
             CrystalBase = 37;
             StepBase = 180_000;
             DrugBase = 350_000;
