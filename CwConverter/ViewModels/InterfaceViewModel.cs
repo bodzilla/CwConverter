@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Runtime.CompilerServices;
 using CwConverter.Annotations;
 using Prism.Commands;
@@ -11,18 +12,18 @@ namespace CwConverter.ViewModels
     {
         public InterfaceViewModel()
         {
-            ItemTextValue = "Item";
+            ItemTextValue = ConfigurationManager.AppSettings["ItemTextValue"];
             ResetValues();
         }
 
         private void ResetValues()
         {
-            CrystalBase = 37;
-            StepBase = 180_000;
-            DrugBase = 350_000;
-            PotionBase = 180_000;
-            DonatorPackBase = 7_000_000_000;
-            ItemBase = 100;
+            CrystalBase = int.Parse(ConfigurationManager.AppSettings["CrystalBase"]);
+            StepBase = double.Parse(ConfigurationManager.AppSettings["StepBase"]);
+            DrugBase = double.Parse(ConfigurationManager.AppSettings["DrugBase"]);
+            PotionBase = double.Parse(ConfigurationManager.AppSettings["PotionBase"]);
+            DonatorPackBase = double.Parse(ConfigurationManager.AppSettings["DonatorPackBase"]);
+            ItemBase = double.Parse(ConfigurationManager.AppSettings["ItemBase"]);
 
             Money = 0;
             Crystals = 0;
