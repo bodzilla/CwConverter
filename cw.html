@@ -539,329 +539,346 @@
     </div>
 
     <script>
-    const DEFAULTS = {
-      CrystalBase: 35,
-      StepBase: 220000,
-      DrugBase: 300000,
-      PotionBase: 180000,
-      DonatorPackBase: 7000000000,
-      ItemBase: 100,
-      ItemTextValue: 'Item'
-    };
+        const DEFAULTS = {
+            CrystalBase: 35,
+            StepBase: 220000,
+            DrugBase: 300000,
+            PotionBase: 180000,
+            DonatorPackBase: 7000000000,
+            ItemBase: 100,
+            ItemTextValue: 'Item'
+        };
 
-    const BASE_KEYS = [
-      'CrystalBase','StepBase','DrugBase','PotionBase','DonatorPackBase','ItemBase'
-    ];
+        const BASE_KEYS = [
+            'CrystalBase', 'StepBase', 'DrugBase', 'PotionBase', 'DonatorPackBase', 'ItemBase'
+        ];
 
-    const COMMODITY_KEYS = [
-      'Money','Crystals','Steps','Drugs','Potions','DonatorPacks','Items'
-    ];
+        const COMMODITY_KEYS = [
+            'Money', 'Crystals', 'Steps', 'Drugs', 'Potions', 'DonatorPacks', 'Items'
+        ];
 
-    const state = {
-      CrystalBase: 0,
-      StepBase: 0,
-      DrugBase: 0,
-      PotionBase: 0,
-      DonatorPackBase: 0,
-      ItemBase: 0,
-      ItemTextValue: '',
+        const state = {
+            CrystalBase: 0,
+            StepBase: 0,
+            DrugBase: 0,
+            PotionBase: 0,
+            DonatorPackBase: 0,
+            ItemBase: 0,
+            ItemTextValue: '',
 
-      Money: 0,
-      Crystals: 0,
-      Steps: 0,
-      Drugs: 0,
-      Potions: 0,
-      DonatorPacks: 0,
-      Items: 0,
+            Money: 0,
+            Crystals: 0,
+            Steps: 0,
+            Drugs: 0,
+            Potions: 0,
+            DonatorPacks: 0,
+            Items: 0,
 
-      focusedCommodity: null
-    };
+            focusedCommodity: null,
+            lastEditedCommodity: 'Money'
+        };
 
-    function digitsBeforeCursor(value, cursorIndex){
-      return value.slice(0, cursorIndex).replace(/\D/g, '').length;
-    }
-
-    function cursorFromDigitIndex(formattedValue, digitIndex){
-      if (digitIndex <= 0) return 0;
-      let seenDigits = 0;
-      for (let i = 0; i < formattedValue.length; i++){
-        if (/\d/.test(formattedValue[i])) {
-          seenDigits++;
-          if (seenDigits >= digitIndex) return i + 1;
+        function digitsBeforeCursor(value, cursorIndex) {
+            return value.slice(0, cursorIndex).replace(/\D/g, '').length;
         }
-      }
-      return formattedValue.length;
-    }
 
-    function sanitizeNumericInput(value){
-      return String(value || '').replace(/\D/g, '');
-    }
-
-    function parseNumber(value){
-      const digits = sanitizeNumericInput(value);
-      return digits ? parseInt(digits, 10) : 0;
-    }
-
-    function formatNumber(value){
-      if (!isFinite(value)) return '';
-      return Math.floor(Math.max(0, value)).toLocaleString('en-GB');
-    }
-
-    function formatInputPreserveCaret(input){
-      const raw = input.value;
-      const start = input.selectionStart ?? raw.length;
-      const digitIndex = digitsBeforeCursor(raw, start);
-      const numericValue = parseNumber(raw);
-      const formatted = numericValue === 0 && sanitizeNumericInput(raw) === '' ? '' : formatNumber(numericValue);
-
-      input.value = formatted;
-
-      const newPos = cursorFromDigitIndex(formatted, digitIndex);
-      input.setSelectionRange(newPos, newPos);
-
-      return numericValue;
-    }
-
-    function updateItemsLabel(){
-      const baseText = state.ItemTextValue && state.ItemTextValue.trim()
-        ? state.ItemTextValue.trim()
-        : DEFAULTS.ItemTextValue;
-
-      document.getElementById('ItemsLabel').textContent = baseText + 's';
-    }
-
-    function updateBaseInputs(){
-      BASE_KEYS.forEach(key => {
-        const el = document.getElementById(key);
-        if (document.activeElement !== el) {
-          el.value = formatNumber(state[key]);
+        function cursorFromDigitIndex(formattedValue, digitIndex) {
+            if (digitIndex <= 0) return 0;
+            let seenDigits = 0;
+            for (let i = 0; i < formattedValue.length; i++) {
+                if (/\d/.test(formattedValue[i])) {
+                    seenDigits++;
+                    if (seenDigits >= digitIndex) return i + 1;
+                }
+            }
+            return formattedValue.length;
         }
-      });
 
-      const itemText = document.getElementById('ItemTextValue');
-      if (document.activeElement !== itemText) {
-        itemText.value = state.ItemTextValue;
-      }
-
-      updateItemsLabel();
-    }
-
-    function updateCommodityInputs(){
-      COMMODITY_KEYS.forEach(key => {
-        const el = document.getElementById(key);
-        if (document.activeElement !== el) {
-          el.value = formatNumber(state[key]);
+        function sanitizeNumericInput(value) {
+            return String(value || '').replace(/\D/g, '');
         }
-      });
-    }
 
-    function updateAllInputs(){
-      updateBaseInputs();
-      updateCommodityInputs();
-    }
-
-    function resetValues(){
-      Object.assign(state, {
-        CrystalBase: DEFAULTS.CrystalBase,
-        StepBase: DEFAULTS.StepBase,
-        DrugBase: DEFAULTS.DrugBase,
-        PotionBase: DEFAULTS.PotionBase,
-        DonatorPackBase: DEFAULTS.DonatorPackBase,
-        ItemBase: DEFAULTS.ItemBase,
-        ItemTextValue: DEFAULTS.ItemTextValue,
-
-        Money: 0,
-        Crystals: 0,
-        Steps: 0,
-        Drugs: 0,
-        Potions: 0,
-        DonatorPacks: 0,
-        Items: 0,
-        focusedCommodity: null
-      });
-
-      updateAllInputs();
-    }
-
-    function safeDivide(numerator, denominator){
-      if (!denominator || !isFinite(denominator)) return 0;
-      return numerator / denominator;
-    }
-
-    function convert(commodity, value){
-      const values = {};
-      let money;
-
-      switch(commodity){
-        case 'Money':
-          values.Crystals = safeDivide(value, state.CrystalBase);
-          values.Steps = safeDivide(value, state.StepBase);
-          values.Drugs = safeDivide(value, state.DrugBase);
-          values.Potions = safeDivide(value, state.PotionBase);
-          values.DonatorPacks = safeDivide(value, state.DonatorPackBase);
-          values.Items = safeDivide(value, state.ItemBase);
-          break;
-
-        case 'Crystals':
-          money = value * state.CrystalBase;
-          values.Money = money;
-          values.Steps = safeDivide(money, state.StepBase);
-          values.Drugs = safeDivide(money, state.DrugBase);
-          values.Potions = safeDivide(money, state.PotionBase);
-          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
-          values.Items = safeDivide(money, state.ItemBase);
-          break;
-
-        case 'Steps':
-          money = value * state.StepBase;
-          values.Money = money;
-          values.Crystals = safeDivide(money, state.CrystalBase);
-          values.Drugs = safeDivide(money, state.DrugBase);
-          values.Potions = safeDivide(money, state.PotionBase);
-          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
-          values.Items = safeDivide(money, state.ItemBase);
-          break;
-
-        case 'Drugs':
-          money = value * state.DrugBase;
-          values.Money = money;
-          values.Crystals = safeDivide(money, state.CrystalBase);
-          values.Steps = safeDivide(money, state.StepBase);
-          values.Potions = safeDivide(money, state.PotionBase);
-          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
-          values.Items = safeDivide(money, state.ItemBase);
-          break;
-
-        case 'Potions':
-          money = value * state.PotionBase;
-          values.Money = money;
-          values.Crystals = safeDivide(money, state.CrystalBase);
-          values.Steps = safeDivide(money, state.StepBase);
-          values.Drugs = safeDivide(money, state.DrugBase);
-          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
-          values.Items = safeDivide(money, state.ItemBase);
-          break;
-
-        case 'DonatorPacks':
-          money = value * state.DonatorPackBase;
-          values.Money = money;
-          values.Crystals = safeDivide(money, state.CrystalBase);
-          values.Steps = safeDivide(money, state.StepBase);
-          values.Drugs = safeDivide(money, state.DrugBase);
-          values.Potions = safeDivide(money, state.PotionBase);
-          values.Items = safeDivide(money, state.ItemBase);
-          break;
-
-        case 'Items':
-          money = value * state.ItemBase;
-          values.Money = money;
-          values.Crystals = safeDivide(money, state.CrystalBase);
-          values.Steps = safeDivide(money, state.StepBase);
-          values.Drugs = safeDivide(money, state.DrugBase);
-          values.Potions = safeDivide(money, state.PotionBase);
-          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
-          break;
-      }
-
-      return values;
-    }
-
-    function display(values){
-      for (const key in values){
-        if (!Object.prototype.hasOwnProperty.call(values, key)) continue;
-        const v = Math.floor(values[key]);
-        state[key] = isFinite(v) ? Math.max(0, v) : 0;
-      }
-      updateCommodityInputs();
-    }
-
-    function recalcFromFocusedCommodity(){
-      if (!state.focusedCommodity) return;
-      const el = document.getElementById(state.focusedCommodity);
-      const currentValue = parseNumber(el.value);
-      state[state.focusedCommodity] = currentValue;
-      const values = convert(state.focusedCommodity, currentValue);
-      display(values);
-    }
-
-    function wireBaseInputs(){
-      BASE_KEYS.forEach(key => {
-        const el = document.getElementById(key);
-
-        el.addEventListener('input', () => {
-          const value = formatInputPreserveCaret(el);
-          state[key] = value;
-          recalcFromFocusedCommodity();
-        });
-
-        el.addEventListener('blur', () => {
-          state[key] = parseNumber(el.value);
-          el.value = formatNumber(state[key]);
-          recalcFromFocusedCommodity();
-        });
-      });
-
-      const itemText = document.getElementById('ItemTextValue');
-
-      itemText.addEventListener('input', () => {
-        state.ItemTextValue = itemText.value.trim() || DEFAULTS.ItemTextValue;
-        updateItemsLabel();
-      });
-
-      itemText.addEventListener('blur', () => {
-        if (!itemText.value.trim()) {
-          itemText.value = DEFAULTS.ItemTextValue;
-          state.ItemTextValue = DEFAULTS.ItemTextValue;
-          updateItemsLabel();
+        function parseNumber(value) {
+            const digits = sanitizeNumericInput(value);
+            return digits ? parseInt(digits, 10) : 0;
         }
-      });
-    }
 
-    function wireCommodityInputs(){
-      COMMODITY_KEYS.forEach(key => {
-        const el = document.getElementById(key);
+        function formatNumber(value) {
+            if (!isFinite(value)) return '';
+            return Math.floor(Math.max(0, value)).toLocaleString('en-GB');
+        }
 
-        el.addEventListener('focus', () => {
-          state.focusedCommodity = key;
-        });
+        function formatInputPreserveCaret(input) {
+            const raw = input.value;
+            const start = input.selectionStart ?? raw.length;
+            const digitIndex = digitsBeforeCursor(raw, start);
+            const numericValue = parseNumber(raw);
+            const formatted = numericValue === 0 && sanitizeNumericInput(raw) === '' ? '' : formatNumber(numericValue);
 
-        el.addEventListener('input', () => {
-          state.focusedCommodity = key;
-          const value = formatInputPreserveCaret(el);
-          state[key] = value;
-          const values = convert(key, value);
-          display(values);
-        });
+            input.value = formatted;
 
-        el.addEventListener('blur', () => {
-          const value = parseNumber(el.value);
-          state[key] = value;
-          el.value = formatNumber(value);
-          const values = convert(key, value);
-          display(values);
-          state.focusedCommodity = null;
-        });
-      });
-    }
+            const newPos = cursorFromDigitIndex(formatted, digitIndex);
+            input.setSelectionRange(newPos, newPos);
 
-    function wireHelpToggle(){
-      const button = document.getElementById('helpToggle');
-      const panel = document.getElementById('helpPanel');
+            return numericValue;
+        }
 
-      button.addEventListener('click', () => {
-        const isOpen = panel.classList.toggle('open');
-        button.setAttribute('aria-expanded', String(isOpen));
-        panel.setAttribute('aria-hidden', String(!isOpen));
-        button.textContent = isOpen ? 'Hide Help' : 'Help';
-      });
-    }
+        function updateItemsLabel() {
+            const baseText = state.ItemTextValue && state.ItemTextValue.trim()
+                ? state.ItemTextValue.trim()
+                : DEFAULTS.ItemTextValue;
 
-    document.getElementById('reset').addEventListener('click', resetValues);
+            document.getElementById('ItemsLabel').textContent = baseText + 's';
+        }
 
-    wireBaseInputs();
-    wireCommodityInputs();
-    wireHelpToggle();
-    resetValues();
+        function updateBaseInputs() {
+            BASE_KEYS.forEach(key => {
+                const el = document.getElementById(key);
+                if (document.activeElement !== el) {
+                    el.value = formatNumber(state[key]);
+                }
+            });
+
+            const itemText = document.getElementById('ItemTextValue');
+            if (document.activeElement !== itemText) {
+                itemText.value = state.ItemTextValue;
+            }
+
+            updateItemsLabel();
+        }
+
+        function updateCommodityInputs() {
+            COMMODITY_KEYS.forEach(key => {
+                const el = document.getElementById(key);
+                if (document.activeElement !== el) {
+                    el.value = formatNumber(state[key]);
+                }
+            });
+        }
+
+        function updateAllInputs() {
+            updateBaseInputs();
+            updateCommodityInputs();
+        }
+
+        function resetValues() {
+            Object.assign(state, {
+                CrystalBase: DEFAULTS.CrystalBase,
+                StepBase: DEFAULTS.StepBase,
+                DrugBase: DEFAULTS.DrugBase,
+                PotionBase: DEFAULTS.PotionBase,
+                DonatorPackBase: DEFAULTS.DonatorPackBase,
+                ItemBase: DEFAULTS.ItemBase,
+                ItemTextValue: DEFAULTS.ItemTextValue,
+
+                Money: 0,
+                Crystals: 0,
+                Steps: 0,
+                Drugs: 0,
+                Potions: 0,
+                DonatorPacks: 0,
+                Items: 0,
+                focusedCommodity: null,
+                lastEditedCommodity: 'Money'
+            });
+
+            updateAllInputs();
+        }
+
+        function safeDivide(numerator, denominator) {
+            if (!denominator || !isFinite(denominator)) return 0;
+            return numerator / denominator;
+        }
+
+        function convert(commodity, value) {
+            const values = {};
+            let money;
+
+            switch (commodity) {
+                case 'Money':
+                    values.Crystals = safeDivide(value, state.CrystalBase);
+                    values.Steps = safeDivide(value, state.StepBase);
+                    values.Drugs = safeDivide(value, state.DrugBase);
+                    values.Potions = safeDivide(value, state.PotionBase);
+                    values.DonatorPacks = safeDivide(value, state.DonatorPackBase);
+                    values.Items = safeDivide(value, state.ItemBase);
+                    break;
+
+                case 'Crystals':
+                    money = value * state.CrystalBase;
+                    values.Money = money;
+                    values.Steps = safeDivide(money, state.StepBase);
+                    values.Drugs = safeDivide(money, state.DrugBase);
+                    values.Potions = safeDivide(money, state.PotionBase);
+                    values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+                    values.Items = safeDivide(money, state.ItemBase);
+                    break;
+
+                case 'Steps':
+                    money = value * state.StepBase;
+                    values.Money = money;
+                    values.Crystals = safeDivide(money, state.CrystalBase);
+                    values.Drugs = safeDivide(money, state.DrugBase);
+                    values.Potions = safeDivide(money, state.PotionBase);
+                    values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+                    values.Items = safeDivide(money, state.ItemBase);
+                    break;
+
+                case 'Drugs':
+                    money = value * state.DrugBase;
+                    values.Money = money;
+                    values.Crystals = safeDivide(money, state.CrystalBase);
+                    values.Steps = safeDivide(money, state.StepBase);
+                    values.Potions = safeDivide(money, state.PotionBase);
+                    values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+                    values.Items = safeDivide(money, state.ItemBase);
+                    break;
+
+                case 'Potions':
+                    money = value * state.PotionBase;
+                    values.Money = money;
+                    values.Crystals = safeDivide(money, state.CrystalBase);
+                    values.Steps = safeDivide(money, state.StepBase);
+                    values.Drugs = safeDivide(money, state.DrugBase);
+                    values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+                    values.Items = safeDivide(money, state.ItemBase);
+                    break;
+
+                case 'DonatorPacks':
+                    money = value * state.DonatorPackBase;
+                    values.Money = money;
+                    values.Crystals = safeDivide(money, state.CrystalBase);
+                    values.Steps = safeDivide(money, state.StepBase);
+                    values.Drugs = safeDivide(money, state.DrugBase);
+                    values.Potions = safeDivide(money, state.PotionBase);
+                    values.Items = safeDivide(money, state.ItemBase);
+                    break;
+
+                case 'Items':
+                    money = value * state.ItemBase;
+                    values.Money = money;
+                    values.Crystals = safeDivide(money, state.CrystalBase);
+                    values.Steps = safeDivide(money, state.StepBase);
+                    values.Drugs = safeDivide(money, state.DrugBase);
+                    values.Potions = safeDivide(money, state.PotionBase);
+                    values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+                    break;
+            }
+
+            return values;
+        }
+
+        function display(values) {
+            for (const key in values) {
+                if (!Object.prototype.hasOwnProperty.call(values, key)) continue;
+                const v = Math.floor(values[key]);
+                state[key] = isFinite(v) ? Math.max(0, v) : 0;
+            }
+            updateCommodityInputs();
+        }
+
+        function recalcFromLastEditedCommodity() {
+            const sourceKey = state.focusedCommodity || state.lastEditedCommodity;
+            if (!sourceKey) return;
+
+            const el = document.getElementById(sourceKey);
+            if (!el) return;
+
+            const currentValue = parseNumber(el.value);
+            state[sourceKey] = currentValue;
+
+            const values = convert(sourceKey, currentValue);
+            display(values);
+        }
+
+        function wireBaseInputs() {
+            BASE_KEYS.forEach(key => {
+                const el = document.getElementById(key);
+
+                el.addEventListener('input', () => {
+                    const value = formatInputPreserveCaret(el);
+                    state[key] = value;
+                    recalcFromLastEditedCommodity();
+                });
+
+                el.addEventListener('blur', () => {
+                    state[key] = parseNumber(el.value);
+                    el.value = formatNumber(state[key]);
+                    recalcFromLastEditedCommodity();
+                });
+            });
+
+            const itemText = document.getElementById('ItemTextValue');
+
+            itemText.addEventListener('input', () => {
+                state.ItemTextValue = itemText.value.trim() || DEFAULTS.ItemTextValue;
+                updateItemsLabel();
+                recalcFromLastEditedCommodity();
+            });
+
+            itemText.addEventListener('blur', () => {
+                if (!itemText.value.trim()) {
+                    itemText.value = DEFAULTS.ItemTextValue;
+                    state.ItemTextValue = DEFAULTS.ItemTextValue;
+                    updateItemsLabel();
+                }
+                recalcFromLastEditedCommodity();
+            });
+        }
+
+        function wireCommodityInputs() {
+            COMMODITY_KEYS.forEach(key => {
+                const el = document.getElementById(key);
+
+                el.addEventListener('focus', () => {
+                    state.focusedCommodity = key;
+                    state.lastEditedCommodity = key;
+                });
+
+                el.addEventListener('input', () => {
+                    state.focusedCommodity = key;
+                    state.lastEditedCommodity = key;
+
+                    const value = formatInputPreserveCaret(el);
+                    state[key] = value;
+
+                    const values = convert(key, value);
+                    display(values);
+                });
+
+                el.addEventListener('blur', () => {
+                    const value = parseNumber(el.value);
+                    state[key] = value;
+                    state.lastEditedCommodity = key;
+
+                    el.value = formatNumber(value);
+
+                    const values = convert(key, value);
+                    display(values);
+
+                    state.focusedCommodity = null;
+                });
+            });
+        }
+
+        function wireHelpToggle() {
+            const button = document.getElementById('helpToggle');
+            const panel = document.getElementById('helpPanel');
+
+            button.addEventListener('click', () => {
+                const isOpen = panel.classList.toggle('open');
+                button.setAttribute('aria-expanded', String(isOpen));
+                panel.setAttribute('aria-hidden', String(!isOpen));
+                button.textContent = isOpen ? 'Hide Help' : 'Help';
+            });
+        }
+
+        document.getElementById('reset').addEventListener('click', resetValues);
+
+        wireBaseInputs();
+        wireCommodityInputs();
+        wireHelpToggle();
+        resetValues();
     </script>
 </body>
 </html>
