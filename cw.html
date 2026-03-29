@@ -1,0 +1,867 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ChaoticWars Convertor</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --panel: #121826;
+            --panel-2: #161d2d;
+            --surface: #0f1522;
+            --line: rgba(255,255,255,.07);
+            --line-strong: rgba(255,255,255,.12);
+            --text: #eef3fb;
+            --muted: #98a4bb;
+            --accent: #7ea2ff;
+            --shadow: 0 18px 44px rgba(0,0,0,.28);
+            --radius-xl: 20px;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --input-h: 44px;
+            --row-gap: 0;
+            --label-h: 22px;
+            --section-pad: 14px;
+            --row-pad-y: 10px;
+            --row-pad-x: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            font-family: Inter,Segoe UI,Arial,Helvetica,sans-serif;
+            color: var(--text);
+            background: #0d1117;
+        }
+
+        body {
+            padding: 18px 16px;
+        }
+
+        .shell {
+            max-width: 1040px;
+            margin: 0 auto;
+        }
+
+        .app {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .app-header {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--line);
+            background: var(--panel-2);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .header-title-wrap {
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .header-actions {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .header-button {
+            height: 36px;
+            padding: 0 14px;
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 10px;
+            background: #182132;
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            cursor: pointer;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+            .header-button:hover {
+                transform: translateY(-1px);
+                border-color: rgba(126,162,255,.30);
+                background: #1b2740;
+            }
+
+            .header-button:active {
+                transform: translateY(0);
+            }
+
+        .help-panel {
+            border-bottom: 1px solid var(--line);
+            background: #101624;
+            display: none;
+        }
+
+            .help-panel.open {
+                display: block;
+            }
+
+        .help-inner {
+            padding: 18px 20px;
+        }
+
+        .help-title {
+            margin: 0 0 12px;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .help-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .help-block h3 {
+            margin: 0 0 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #d8e3f7;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .help-block p,
+        .help-block li {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .help-block p {
+            margin: 0 0 10px;
+        }
+
+        .help-block ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .converter-grid {
+            display: grid;
+            grid-template-columns: minmax(0,1fr) 1px minmax(0,1fr);
+            align-items: start;
+        }
+
+        .divider {
+            background: var(--line);
+            min-height: 100%;
+        }
+
+        .column {
+            padding: var(--section-pad);
+        }
+
+        .column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 0 2px;
+            min-height: 20px;
+        }
+
+        .column-title {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 700;
+            color: #d8e3f7;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .panel-list {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .row {
+            padding: var(--row-pad-y) var(--row-pad-x);
+            background: transparent;
+        }
+
+            .row + .row {
+                border-top: 1px solid var(--line);
+            }
+
+            .row:hover {
+                background: rgba(255,255,255,.018);
+            }
+
+        .row-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: var(--label-h);
+            min-height: var(--label-h);
+            margin: 0 0 8px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .01em;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .field-input,
+        .inline-input {
+            border: 1px solid rgba(255,255,255,.08);
+            background: #0b1019;
+            color: var(--text);
+            outline: none;
+            transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+        }
+
+        .field-input {
+            width: 100%;
+            height: var(--input-h);
+            border-radius: 12px;
+            padding: 0 14px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .inline-input {
+            width: 86px;
+            min-width: 86px;
+            max-width: 86px;
+            height: 24px;
+            border-radius: 8px;
+            padding: 0 8px;
+            font-size: 12px;
+            font-weight: 700;
+            flex: 0 0 86px;
+        }
+
+            .field-input::placeholder,
+            .inline-input::placeholder {
+                color: #6d788f;
+            }
+
+            .field-input:hover,
+            .inline-input:hover {
+                border-color: rgba(255,255,255,.12);
+                background: #0c1220;
+            }
+
+            .field-input:focus,
+            .inline-input:focus {
+                border-color: rgba(126,162,255,.68);
+                box-shadow: 0 0 0 3px rgba(126,162,255,.10);
+                background: #0d1423;
+            }
+
+        .item-prefix {
+            flex: 0 0 auto;
+        }
+
+        .item-inline-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+            flex: 1 1 auto;
+        }
+
+        .action-row {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .action-spacer {
+            height: var(--label-h);
+            margin-bottom: 8px;
+        }
+
+        .reset-button {
+            width: 100%;
+            height: var(--input-h);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 12px;
+            background: #182132;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .01em;
+            cursor: pointer;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+            .reset-button:hover {
+                transform: translateY(-1px);
+                border-color: rgba(126,162,255,.30);
+                background: #1b2740;
+            }
+
+            .reset-button:active {
+                transform: translateY(0);
+            }
+
+        @media (max-width: 860px) {
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .help-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .converter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .divider {
+                display: none;
+            }
+
+            .column {
+                padding: 12px;
+            }
+
+                .column + .column {
+                    border-top: 1px solid var(--line);
+                }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="app">
+            <div class="app-header">
+                <div class="header-top">
+                    <div class="header-title-wrap">
+                        <h1 class="title">ChaoticWars Convertor</h1>
+                    </div>
+                    <div class="header-actions">
+                        <button id="helpToggle" class="header-button" type="button" aria-expanded="false" aria-controls="helpPanel">Help</button>
+                    </div>
+                </div>
+            </div>
+
+            <section id="helpPanel" class="help-panel" aria-hidden="true">
+                <div class="help-inner">
+                    <h2 class="help-title">How it works</h2>
+
+                    <div class="help-grid">
+                        <div class="help-block">
+                            <h3>Overview</h3>
+                            <p>This page is a live value converter with two aligned columns: Base Values on the left and Converted Values on the right.</p>
+                            <p>Each row is intentionally paired like this:</p>
+                            <ul>
+                                <li>Reset Values ↔ Money</li>
+                                <li>$ / Crystal ↔ Crystals</li>
+                                <li>$ / Step ↔ Steps</li>
+                                <li>$ / Drug ↔ Drugs</li>
+                                <li>$ / Potion ↔ Potions</li>
+                                <li>$ / Donator Pack ↔ Donator Packs</li>
+                                <li>$ / Item ↔ Items</li>
+                            </ul>
+                        </div>
+
+                        <div class="help-block">
+                            <h3>Base values</h3>
+                            <p>The left column defines the dollar value for each commodity.</p>
+                            <p>For example, CrystalBase = 35 means 1 Crystal = $35, and ItemBase = 100 means 1 Item = $100.</p>
+                            <p>The Item row is slightly special because the word Item is editable, but the row still stays aligned with the converted Items field.</p>
+                        </div>
+
+                        <div class="help-block">
+                            <h3>Converted values</h3>
+                            <p>The right column is where the user enters a value to convert.</p>
+                            <p>Whichever converted field the user types into becomes the active source value, and the rest are recalculated from it.</p>
+                            <p>Typing into Money calculates the equivalent number of Crystals, Steps, Drugs, Potions, Donator Packs, and Items. Typing into any other commodity converts back through Money and then out to the rest.</p>
+                        </div>
+
+                        <div class="help-block">
+                            <h3>Calculation logic</h3>
+                            <p>The calculations use a shared Money value behind the scenes.</p>
+                            <p>Example: if the user enters 10 Crystals, the app first calculates Money = Crystals × CrystalBase, then uses that Money value to calculate the other commodities.</p>
+                            <p>This keeps every conversion consistent with the same pricing system.</p>
+                        </div>
+
+                        <div class="help-block">
+                            <h3>Reset behaviour</h3>
+                            <p>The Reset Values button restores the defaults for all base values and the Item label, then clears the converted values back to zero.</p>
+                            <ul>
+                                <li>CrystalBase = 35</li>
+                                <li>StepBase = 220,000</li>
+                                <li>DrugBase = 300,000</li>
+                                <li>PotionBase = 180,000</li>
+                                <li>DonatorPackBase = 7,000,000,000</li>
+                                <li>ItemBase = 100</li>
+                                <li>ItemTextValue = Item</li>
+                            </ul>
+                        </div>
+
+                        <div class="help-block">
+                            <h3>Number formatting</h3>
+                            <p>All numeric inputs keep comma separators while typing, so 1000 becomes 1,000 and 1000000 becomes 1,000,000.</p>
+                            <p>The page treats numeric fields as text inputs, strips out commas and other non-numeric characters, performs the calculation, then writes the values back in formatted form.</p>
+                            <p>The script also tries to preserve the cursor position while reformatting.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="converter-grid">
+                <section class="column">
+                    <div class="column-header">
+                        <h2 class="column-title">Base Values</h2>
+                    </div>
+
+                    <div class="panel-list">
+                        <div class="row action-row">
+                            <div class="action-spacer"></div>
+                            <button id="reset" class="reset-button">Reset Values</button>
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="CrystalBase">$ / Crystal</label>
+                            <input id="CrystalBase" class="field-input" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="StepBase">$ / Step</label>
+                            <input id="StepBase" class="field-input" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="DrugBase">$ / Drug</label>
+                            <input id="DrugBase" class="field-input" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="PotionBase">$ / Potion</label>
+                            <input id="PotionBase" class="field-input" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="DonatorPackBase">$ / Donator Pack</label>
+                            <input id="DonatorPackBase" class="field-input" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="ItemBase">
+                                <div class="item-inline-wrap">
+                                    <span class="item-prefix">$ /</span>
+                                    <input id="ItemTextValue" class="inline-input" type="text" value="Item" autocomplete="off">
+                                </div>
+                            </label>
+                            <input id="ItemBase" class="field-input" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+                    </div>
+                </section>
+
+                <div class="divider" aria-hidden="true"></div>
+
+                <section class="column">
+                    <div class="column-header">
+                        <h2 class="column-title">Convert</h2>
+                    </div>
+
+                    <div class="panel-list">
+                        <div class="row">
+                            <label class="row-label" for="Money">Money</label>
+                            <input id="Money" class="field-input" data-commodity="Money" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="Crystals">Crystals</label>
+                            <input id="Crystals" class="field-input" data-commodity="Crystals" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="Steps">Steps</label>
+                            <input id="Steps" class="field-input" data-commodity="Steps" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="Drugs">Drugs</label>
+                            <input id="Drugs" class="field-input" data-commodity="Drugs" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="Potions">Potions</label>
+                            <input id="Potions" class="field-input" data-commodity="Potions" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" for="DonatorPacks">Donator Packs</label>
+                            <input id="DonatorPacks" class="field-input" data-commodity="DonatorPacks" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+
+                        <div class="row">
+                            <label class="row-label" id="ItemsLabel" for="Items">Items</label>
+                            <input id="Items" class="field-input" data-commodity="Items" type="text" inputmode="numeric" autocomplete="off">
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const DEFAULTS = {
+      CrystalBase: 35,
+      StepBase: 220000,
+      DrugBase: 300000,
+      PotionBase: 180000,
+      DonatorPackBase: 7000000000,
+      ItemBase: 100,
+      ItemTextValue: 'Item'
+    };
+
+    const BASE_KEYS = [
+      'CrystalBase','StepBase','DrugBase','PotionBase','DonatorPackBase','ItemBase'
+    ];
+
+    const COMMODITY_KEYS = [
+      'Money','Crystals','Steps','Drugs','Potions','DonatorPacks','Items'
+    ];
+
+    const state = {
+      CrystalBase: 0,
+      StepBase: 0,
+      DrugBase: 0,
+      PotionBase: 0,
+      DonatorPackBase: 0,
+      ItemBase: 0,
+      ItemTextValue: '',
+
+      Money: 0,
+      Crystals: 0,
+      Steps: 0,
+      Drugs: 0,
+      Potions: 0,
+      DonatorPacks: 0,
+      Items: 0,
+
+      focusedCommodity: null
+    };
+
+    function digitsBeforeCursor(value, cursorIndex){
+      return value.slice(0, cursorIndex).replace(/\D/g, '').length;
+    }
+
+    function cursorFromDigitIndex(formattedValue, digitIndex){
+      if (digitIndex <= 0) return 0;
+      let seenDigits = 0;
+      for (let i = 0; i < formattedValue.length; i++){
+        if (/\d/.test(formattedValue[i])) {
+          seenDigits++;
+          if (seenDigits >= digitIndex) return i + 1;
+        }
+      }
+      return formattedValue.length;
+    }
+
+    function sanitizeNumericInput(value){
+      return String(value || '').replace(/\D/g, '');
+    }
+
+    function parseNumber(value){
+      const digits = sanitizeNumericInput(value);
+      return digits ? parseInt(digits, 10) : 0;
+    }
+
+    function formatNumber(value){
+      if (!isFinite(value)) return '';
+      return Math.floor(Math.max(0, value)).toLocaleString('en-GB');
+    }
+
+    function formatInputPreserveCaret(input){
+      const raw = input.value;
+      const start = input.selectionStart ?? raw.length;
+      const digitIndex = digitsBeforeCursor(raw, start);
+      const numericValue = parseNumber(raw);
+      const formatted = numericValue === 0 && sanitizeNumericInput(raw) === '' ? '' : formatNumber(numericValue);
+
+      input.value = formatted;
+
+      const newPos = cursorFromDigitIndex(formatted, digitIndex);
+      input.setSelectionRange(newPos, newPos);
+
+      return numericValue;
+    }
+
+    function updateItemsLabel(){
+      const baseText = state.ItemTextValue && state.ItemTextValue.trim()
+        ? state.ItemTextValue.trim()
+        : DEFAULTS.ItemTextValue;
+
+      document.getElementById('ItemsLabel').textContent = baseText + 's';
+    }
+
+    function updateBaseInputs(){
+      BASE_KEYS.forEach(key => {
+        const el = document.getElementById(key);
+        if (document.activeElement !== el) {
+          el.value = formatNumber(state[key]);
+        }
+      });
+
+      const itemText = document.getElementById('ItemTextValue');
+      if (document.activeElement !== itemText) {
+        itemText.value = state.ItemTextValue;
+      }
+
+      updateItemsLabel();
+    }
+
+    function updateCommodityInputs(){
+      COMMODITY_KEYS.forEach(key => {
+        const el = document.getElementById(key);
+        if (document.activeElement !== el) {
+          el.value = formatNumber(state[key]);
+        }
+      });
+    }
+
+    function updateAllInputs(){
+      updateBaseInputs();
+      updateCommodityInputs();
+    }
+
+    function resetValues(){
+      Object.assign(state, {
+        CrystalBase: DEFAULTS.CrystalBase,
+        StepBase: DEFAULTS.StepBase,
+        DrugBase: DEFAULTS.DrugBase,
+        PotionBase: DEFAULTS.PotionBase,
+        DonatorPackBase: DEFAULTS.DonatorPackBase,
+        ItemBase: DEFAULTS.ItemBase,
+        ItemTextValue: DEFAULTS.ItemTextValue,
+
+        Money: 0,
+        Crystals: 0,
+        Steps: 0,
+        Drugs: 0,
+        Potions: 0,
+        DonatorPacks: 0,
+        Items: 0,
+        focusedCommodity: null
+      });
+
+      updateAllInputs();
+    }
+
+    function safeDivide(numerator, denominator){
+      if (!denominator || !isFinite(denominator)) return 0;
+      return numerator / denominator;
+    }
+
+    function convert(commodity, value){
+      const values = {};
+      let money;
+
+      switch(commodity){
+        case 'Money':
+          values.Crystals = safeDivide(value, state.CrystalBase);
+          values.Steps = safeDivide(value, state.StepBase);
+          values.Drugs = safeDivide(value, state.DrugBase);
+          values.Potions = safeDivide(value, state.PotionBase);
+          values.DonatorPacks = safeDivide(value, state.DonatorPackBase);
+          values.Items = safeDivide(value, state.ItemBase);
+          break;
+
+        case 'Crystals':
+          money = value * state.CrystalBase;
+          values.Money = money;
+          values.Steps = safeDivide(money, state.StepBase);
+          values.Drugs = safeDivide(money, state.DrugBase);
+          values.Potions = safeDivide(money, state.PotionBase);
+          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+          values.Items = safeDivide(money, state.ItemBase);
+          break;
+
+        case 'Steps':
+          money = value * state.StepBase;
+          values.Money = money;
+          values.Crystals = safeDivide(money, state.CrystalBase);
+          values.Drugs = safeDivide(money, state.DrugBase);
+          values.Potions = safeDivide(money, state.PotionBase);
+          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+          values.Items = safeDivide(money, state.ItemBase);
+          break;
+
+        case 'Drugs':
+          money = value * state.DrugBase;
+          values.Money = money;
+          values.Crystals = safeDivide(money, state.CrystalBase);
+          values.Steps = safeDivide(money, state.StepBase);
+          values.Potions = safeDivide(money, state.PotionBase);
+          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+          values.Items = safeDivide(money, state.ItemBase);
+          break;
+
+        case 'Potions':
+          money = value * state.PotionBase;
+          values.Money = money;
+          values.Crystals = safeDivide(money, state.CrystalBase);
+          values.Steps = safeDivide(money, state.StepBase);
+          values.Drugs = safeDivide(money, state.DrugBase);
+          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+          values.Items = safeDivide(money, state.ItemBase);
+          break;
+
+        case 'DonatorPacks':
+          money = value * state.DonatorPackBase;
+          values.Money = money;
+          values.Crystals = safeDivide(money, state.CrystalBase);
+          values.Steps = safeDivide(money, state.StepBase);
+          values.Drugs = safeDivide(money, state.DrugBase);
+          values.Potions = safeDivide(money, state.PotionBase);
+          values.Items = safeDivide(money, state.ItemBase);
+          break;
+
+        case 'Items':
+          money = value * state.ItemBase;
+          values.Money = money;
+          values.Crystals = safeDivide(money, state.CrystalBase);
+          values.Steps = safeDivide(money, state.StepBase);
+          values.Drugs = safeDivide(money, state.DrugBase);
+          values.Potions = safeDivide(money, state.PotionBase);
+          values.DonatorPacks = safeDivide(money, state.DonatorPackBase);
+          break;
+      }
+
+      return values;
+    }
+
+    function display(values){
+      for (const key in values){
+        if (!Object.prototype.hasOwnProperty.call(values, key)) continue;
+        const v = Math.floor(values[key]);
+        state[key] = isFinite(v) ? Math.max(0, v) : 0;
+      }
+      updateCommodityInputs();
+    }
+
+    function recalcFromFocusedCommodity(){
+      if (!state.focusedCommodity) return;
+      const el = document.getElementById(state.focusedCommodity);
+      const currentValue = parseNumber(el.value);
+      state[state.focusedCommodity] = currentValue;
+      const values = convert(state.focusedCommodity, currentValue);
+      display(values);
+    }
+
+    function wireBaseInputs(){
+      BASE_KEYS.forEach(key => {
+        const el = document.getElementById(key);
+
+        el.addEventListener('input', () => {
+          const value = formatInputPreserveCaret(el);
+          state[key] = value;
+          recalcFromFocusedCommodity();
+        });
+
+        el.addEventListener('blur', () => {
+          state[key] = parseNumber(el.value);
+          el.value = formatNumber(state[key]);
+          recalcFromFocusedCommodity();
+        });
+      });
+
+      const itemText = document.getElementById('ItemTextValue');
+
+      itemText.addEventListener('input', () => {
+        state.ItemTextValue = itemText.value.trim() || DEFAULTS.ItemTextValue;
+        updateItemsLabel();
+      });
+
+      itemText.addEventListener('blur', () => {
+        if (!itemText.value.trim()) {
+          itemText.value = DEFAULTS.ItemTextValue;
+          state.ItemTextValue = DEFAULTS.ItemTextValue;
+          updateItemsLabel();
+        }
+      });
+    }
+
+    function wireCommodityInputs(){
+      COMMODITY_KEYS.forEach(key => {
+        const el = document.getElementById(key);
+
+        el.addEventListener('focus', () => {
+          state.focusedCommodity = key;
+        });
+
+        el.addEventListener('input', () => {
+          state.focusedCommodity = key;
+          const value = formatInputPreserveCaret(el);
+          state[key] = value;
+          const values = convert(key, value);
+          display(values);
+        });
+
+        el.addEventListener('blur', () => {
+          const value = parseNumber(el.value);
+          state[key] = value;
+          el.value = formatNumber(value);
+          const values = convert(key, value);
+          display(values);
+          state.focusedCommodity = null;
+        });
+      });
+    }
+
+    function wireHelpToggle(){
+      const button = document.getElementById('helpToggle');
+      const panel = document.getElementById('helpPanel');
+
+      button.addEventListener('click', () => {
+        const isOpen = panel.classList.toggle('open');
+        button.setAttribute('aria-expanded', String(isOpen));
+        panel.setAttribute('aria-hidden', String(!isOpen));
+        button.textContent = isOpen ? 'Hide Help' : 'Help';
+      });
+    }
+
+    document.getElementById('reset').addEventListener('click', resetValues);
+
+    wireBaseInputs();
+    wireCommodityInputs();
+    wireHelpToggle();
+    resetValues();
+    </script>
+</body>
+</html>
